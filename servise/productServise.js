@@ -1,5 +1,6 @@
 
 const db = require('../database');
+const commonResponse = require('../enum/enumobject');
 
 const response = (success, statusCode, message, payload) => {
     return { success, statusCode, message, payload };
@@ -17,9 +18,9 @@ const createProduct = (req, res) =>{
     const insertQauery = "insert into product set ?";
     db.query(insertQauery, productInput, (error, dbResponse) =>{
         if (error) {
-            return res.json(response(false, 404, "Invalid product input", error))
+            return res.json(response(false, commonResponse.notfoundCode, commonResponse.invalidMessage, error))
         }
-        res.send(response(true, 201, "product data inserted successfully", dbResponse));
+        res.send(response(true, commonResponse.createCode, commonResponse.insertMessage, dbResponse));
 
     });
    
@@ -32,7 +33,7 @@ const products = (req, res) => {
     db.query(producteQuery, (error, dbResponse) => {
         if(error) throw error;
         console.log(dbResponse);
-        res.send(response(true, 200, "product datas are...... ", dbResponse));
+        res.send(response(true, commonResponse.okCode, commonResponse.getMessage, dbResponse));
     });
 
 };
@@ -44,7 +45,7 @@ const findProduct = (req, res) => {
     db.query(producteQuery, [parseInt(req.params.id)], (error, dbResponse) => {
         if(error) throw error;
         console.log(dbResponse);
-        res.send(response(true, 201, "product data are...... ", dbResponse[0]));
+        res.send(response(true, commonResponse.okCode, commonResponse.getMessage, dbResponse[0]));
     });
 
 };
@@ -55,9 +56,9 @@ const updateProduct = (req, res) =>{
     const update = [setData.productId, setData.productName, setData.brandName, setData.productDescription, req.params.id];
     db.query(updateQuery, update, (error, dbResponse) =>{
         if (error) {
-            return res.send(response(false, 404, "Invalid product input", error))            
+            return res.send(response(false, commonResponse.notfoundCode, commonResponse.invalidMessage, error))            
         }
-        res.send(response(true, 201, "product datas updated ", dbResponse[0]))
+        res.send(response(true, commonResponse.updateCode, commonResponse.updateMessage, dbResponse[0]))
     });
 };
 
@@ -66,9 +67,9 @@ const deleteProduct = (req, res) =>{
     const deleteQuery = "delete from product where Id = ?";
     db.query(deleteQuery, [req.params.id], (error, dbResponse) =>{
         if (error) {
-            return res.send(response(false, 404, "Invalid product input", error))            
+            return res.send(response(false, commonResponse.notfoundCode,  commonResponse.insertMessage, error))            
         }
-        res.send(response(true, 201, "product datas deleted ", dbResponse[0]))
+        res.send(response(true, commonResponse.updateCode, commonResponse.deleteMessage, dbResponse[0]))
     });
 
 };

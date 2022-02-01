@@ -1,4 +1,5 @@
 const db = require('../database');
+const commonResponse = require('../enum/enumobject');
 
 const Response = (success, statusCode, message, payload) => {
     return { success, statusCode, message, payload }
@@ -11,10 +12,10 @@ const quantityCheck = (req, res ) =>{
          const stockdbQuantity = stockdbquantityResponse[0].quantity;
          console.log("Stock table:",stockdbQuantity);
          if (stockdbQuantity > 0) {
-            res.send(Response(true, 200, `Your Stock Avaliable Quantity is `, stockdbquantityResponse));
+            res.send(Response(true, commonResponse.okCode, `Your Stock Avaliable Quantity is `, stockdbquantityResponse));
              
          } else {
-            res.send(Response(true, 200, "Sorry, Stock is not Avaliable ",stockdbquantityResponse));
+            res.send(Response(true, commonResponse.okCode, "Sorry, Your Stock is not Avaliable ",stockdbquantityResponse));
          }
          
      });

@@ -1,5 +1,5 @@
 const db = require('../database');
-
+const commonResponse = require('../enum/enumobject');
 const Response = (success, statusCode, message, payload) => {
     return { success, statusCode, message, payload }
 }
@@ -18,7 +18,7 @@ const createPurchase = (req, res) => {
     const insertQuery = "Insert into purchase set ?";
     db.query(insertQuery, purchaseInput, (error, dbResponse) => {
         if (error) {
-            res.send(Response(false, 400, `${error.sqlMessage}`, error))
+            res.send(Response(false, commonResponse.errorCode, `${error.sqlMessage}`, error))
         };
 
         const stockQuery = `select * from stock where productId = ${purchaseInput.productId}`;
@@ -51,22 +51,22 @@ const createPurchase = (req, res) => {
             }
 
         });
-
-        res.send(Response(true, 201, "Data Inserted into purchase table ", dbResponse));
+        
+        res.send(Response(true, commonResponse.createCode, commonResponse.insertMessage, dbResponse));
     });
 
 };
 
-findPurchase = (req, res) => {
+const findPurchase = (req, res) => {
 
     const purchaseQuery = "select * from purchase where Id = ?";
     db.query(purchaseQuery, [req.params.Id], (error, dbResponse) => {
         if (error) throw error;
         console.log(dbResponse);
         if (dbResponse.length > 0) {
-            res.send(Response(true, 200, "Purchase data are...... ", dbResponse[0]));
+            res.send(Response(true, commonResponse.okCode, commonResponse.getMessage, dbResponse[0]));
         } else {
-            res.send(Response(false, 400, "No data found! ", dbResponse[0]));
+            res.send(Response(false, commonResponse.errorCode, commonResponse.invalidMessage, dbResponse[0]));
         }
 
     });
@@ -79,7 +79,7 @@ const purchases = (req, res) => {
     db.query(purchaseQuery, (error, dbResponse) => {
         if (error) throw error;
         console.log(dbResponse);
-        res.send(Response(true, 200, "Purchase data are...... ", dbResponse));
+        res.send(Response(true, commonResponse.okCode, commonResponse.getMessage, dbResponse));
     });
 
 };
@@ -89,7 +89,7 @@ const getAllPurchaseDetails = (req, res) => {
     db.query(getAllDetails, (error, dbResponse) => {
         if (error) throw error;
         console.log(dbResponse);
-        res.send(Response(true, 200, "All the products details are...... ", dbResponse));
+        res.send(Response(true, commonResponse.okCode, commonResponse.getMessage, dbResponse));
     });
 };
 
@@ -101,7 +101,7 @@ const updatePurchase = (req, res) => {
     const update = [set.name, set.productId, set.productName, set.quantity, set.price, date, req.params.Id]
     db.query(updateQuery, update, (error, dbResponse) => {
         if (error) throw error;
-        res.send(Response(true, 202, "Data Updated into  table ", dbResponse[0]));
+        res.send(Response(true, commonResponse.updateCode, commonResponse.updateMessage, dbResponse[0]));
     });
 
 };
@@ -111,7 +111,7 @@ const deletePruchase = (req, res) => {
     const deleteQuery = "delete from purchase where Id = ?";
     db.query(deleteQuery, [req.params.Id], (error, dbResponse) => {
         if (error) throw error;
-        res.send(Response(true, 202, "Data Deleted from table ", dbResponse));
+        res.send(Response(true, commonResponse.updateCode, commonResponse.deleteMessage, dbResponse));
     });
 
 };
